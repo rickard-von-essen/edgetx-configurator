@@ -11,3 +11,8 @@ It will be based on the same tech stack as the (new) [Betaflight Configurator](h
 See the [basic application skeleton task list](SETUP_TASKS.md) for the Betaflight
 tooling investigation, proposed stack, and implementation checklist. Stack and
 version choices need approval before scaffolding begins.
+
+## License
+
+This project uses the [GNU General Public License v2.0](LICENSE), the same
+license as EdgeTX.
