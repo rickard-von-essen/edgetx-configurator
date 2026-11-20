@@ -10,6 +10,10 @@ The repository currently provides an empty application shell with unit/component
 examples, browser smoke tests, code-style checks, and CI. The
 [setup checklist](SETUP_TASKS.md) records the implementation scope and decisions.
 
+The [implementation backlog](IMPLEMENTATION_TASKS.md) covers planned backup/restore,
+model editing, and broader Companion/Buddy replacement work, starting with
+RadioMaster Zorro / EdgeTX v2.12.5.
+
 ## Development
 
 The skeleton uses Vue 3 Composition API, strict TypeScript, Vite 8, Nuxt UI 4,
