@@ -162,6 +162,13 @@ unsupported browsers produce actionable states; no fake connected device or
 silent fallback write. Test Chromium directory behavior and fallback workflows
 on Firefox/Safari where supported. [S15]
 
+**Progress:** Read-only storage ports, native file/directory adapters, an in-memory
+adapter and the Local Files UI are implemented. Unit and cross-browser checks
+cover unchanged binary download, read-mode options, unsupported browsers,
+permission denial and cancellation. The native OS picker selection/cancellation
+was manually confirmed. ZIP/.etx files remain opaque; directory inventory and
+actual backup creation are subsequent tasks.
+
 ### F03. Introduce a raw workspace and operation navigation
 
 **Priority:** P0. **Depends on:** F02.

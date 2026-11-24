@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("loads and reloads the empty application without errors", async ({ page, baseURL }) => {
+test("loads and reloads the application without errors", async ({ page, baseURL }) => {
     if (!baseURL) {
         throw new Error("The smoke suite requires a configured baseURL.");
     }
@@ -35,7 +35,8 @@ test("loads and reloads the empty application without errors", async ({ page, ba
 
     const reloaded = await page.reload();
 
-    expect(reloaded?.ok()).toBe(true);
+    // Firefox may revalidate the cached document instead of downloading it again.
+    expect([200, 304]).toContain(reloaded?.status());
     await expect(heading).toBeVisible();
     expect(failures).toEqual([]);
 });
