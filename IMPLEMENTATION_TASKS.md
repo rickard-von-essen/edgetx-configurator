@@ -1,8 +1,9 @@
 # EdgeTX Configurator implementation backlog
 
-Status: planned work, not implemented functionality. The application skeleton is
-covered by [SETUP_TASKS.md](SETUP_TASKS.md). This backlog turns the
-Companion/Buddy replacement goal into incremental feature milestones.
+Status: F01 compatibility fixtures, F02 local access and F03 raw workspaces are
+implemented; remaining items are planned work. The application foundation is
+covered by [SETUP_TASKS.md](SETUP_TASKS.md). This backlog turns the Companion/Buddy
+replacement goal into incremental feature milestones.
 
 ## Recommended starting point
 
@@ -181,6 +182,15 @@ archive adapters should produce the same raw workspace shape.
 **Acceptance/tests:** Unknown files remain present; invalid content is visible,
 not discarded. Opening/closing a workspace does not mutate its source. No
 automatic persistent storage of user data or assumed radio identity.
+
+**Progress:** Immutable RAM snapshots retain relative paths, unknown/malformed
+files, empty directories, source metadata and diagnostics. Inventory is paginated,
+and Backup/Restore navigation explicitly reports that archive operations are not
+implemented. User-approved limits are 512 MiB total, 64 MiB/file, 20,000 entries
+and 64 nested directory levels. Unreadable/over-budget entries remain visible;
+entry/depth caps report unscanned regions and mark the workspace incomplete.
+Cancellation preserves the previous workspace. Downloads are detached from
+later source changes; content validation/radio identification remain unperformed.
 
 ### F04. Prove document-preserving YAML and capability codecs
 

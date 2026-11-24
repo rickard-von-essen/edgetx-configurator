@@ -7,8 +7,9 @@ to replace the [EdgeTX companion](https://github.com/EdgeTX/edgetx/tree/main/com
 The application follows the technology stack of the new [Betaflight Configurator](https://github.com/betaflight/betaflight-configurator).
 
 The repository currently provides an application shell, read-only local file
-and directory selection, unchanged-file downloads, unit/component tests, browser
-smoke tests, code-style checks, and CI. The
+and directory access, RAM-only raw workspaces with inventory/diagnostics,
+unchanged-file downloads, unit/component tests, browser smoke tests, code-style
+checks, and CI. The
 [setup checklist](SETUP_TASKS.md) records the implementation scope and decisions.
 
 The [implementation backlog](IMPLEMENTATION_TASKS.md) covers planned backup/restore,
@@ -95,27 +96,56 @@ after installing/updating dependencies. If npm reports `EBADENGINE`, select the
 pinned Node/npm versions before retrying. No sibling repositories, credentials,
 native SDKs, radio, or external services are used by the app or tests.
 
-### Local file access (F02)
+### Local workspaces (F02/F03)
 
 Run `npm run dev` and open `http://127.0.0.1:5173`.
 
 - **Select files or archives** accepts ordinary files, ZIPs and `.etx` archives.
-  Selection keeps their bytes unchanged; archives are opaque files at this stage.
-- **Download original** requests a separate unchanged copy. The browser controls
-  its destination/completion; save outside the radio/SD card and verify the result.
-  This is not a complete radio backup.
+  Successful captures detach their bytes into a RAM snapshot. Archives remain
+  opaque files; no YAML/content validation or radio identification is attempted.
 - **Select directory (read-only)** uses a supporting Chromium browser's native
-  picker on HTTPS or localhost. It displays the selected directory name without
-  writing to it. Directory inventory, model editing and backup creation follow
-  in later tasks.
+  picker on HTTPS or localhost. The workspace records relative paths, nested and
+  empty directories, file metadata, original bytes and diagnostics without
+  writing to the source.
+- **Inventory** paginates all recorded entries, including unknown, empty and
+  malformed files. Unreadable/oversized files retain their metadata and diagnostic
+  rows; the workspace is explicitly marked incomplete.
+- **Download original** uses captured bytes even if the source changes afterward.
+  The browser controls destination/completion; save outside the radio/SD card and
+  verify the result. A file download or workspace snapshot is not a radio backup.
+- **Backup** and **Restore** provide operation navigation only. Archive creation,
+  inspection and offline restore are subsequent B01-B04 tasks.
+- **Cancel capture** preserves the previous workspace. Byte reads are abortable;
+  an uncancellable directory metadata operation may need to finish first.
+- **Close workspace** releases the app's selection/snapshots without changing
+  source files. Workspaces are not automatically persisted and disappear on reload.
 - Browsers without the directory API retain file selection/download. Denied
-  permissions and cancellation are shown explicitly; cancellation preserves
-  the previous selection.
+  permissions and cancellation are shown explicitly.
 
-Native OS picker selection/cancellation was manually confirmed. Automated
-Chromium coverage also adapts a real origin-private filesystem handle; it does
-not automate the OS picker itself. Firefox and WebKit cover file/download
-fallbacks and error states.
+The approved initial capture limits are **512 MiB total, 64 MiB per file,
+20,000 recorded entries and 64 nested directory levels** (the source root is
+level zero). Entry/depth limits stop further enumeration and identify unscanned
+regions; an incomplete workspace never implies that all source files are known
+or backed up. Files that fit the remaining byte budget can still be captured.
+Capture is file-by-file, not an atomic filesystem transaction; keep the source
+unchanged while opening it.
+The byte limits apply to captured payload per workspace, not total browser heap:
+the previous snapshot and temporary read buffers can coexist during replacement.
+Opening another workspace replaces the previous snapshot only after capture
+finishes; cancellation keeps the previous workspace.
+
+Workspace-focused checks:
+
+```sh
+npm test -- tests/unit/Workspace.test.ts tests/unit/WorkspacePanel.test.ts
+npm run test:smoke -- tests/smoke/workspace.spec.ts
+```
+
+Native OS picker selection/cancellation was manually confirmed for F02. Automated
+Chromium coverage also reads nested origin-private filesystem handles and verifies
+that a later source edit does not alter captured downloads; it does not automate
+the OS picker itself. Firefox and WebKit cover file/download, workspace,
+navigation, cancellation and diagnostic workflows.
 
 ### Code conventions and CI
 

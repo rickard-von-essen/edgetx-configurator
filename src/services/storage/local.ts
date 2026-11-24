@@ -2,12 +2,15 @@ export interface LocalFile {
     readonly name: string;
     readonly size: number;
     readonly type: string;
+    readonly lastModified?: number;
+    // External changes can invalidate this source view; workspace capture detaches its bytes.
     getBlob(): Promise<Blob>;
 }
 
 export type LocalEntry =
     | { readonly kind: "file"; readonly file: LocalFile }
-    | { readonly kind: "directory"; readonly directory: LocalDirectory };
+    | { readonly kind: "directory"; readonly directory: LocalDirectory }
+    | { readonly kind: "unreadable-file"; readonly name: string; readonly error: LocalAccessError };
 
 export interface LocalDirectory {
     readonly name: string;
@@ -53,6 +56,7 @@ export function fileSource(file: File): LocalFile {
         name: file.name,
         size: file.size,
         type: file.type,
+        lastModified: file.lastModified,
         async getBlob() {
             return file;
         },

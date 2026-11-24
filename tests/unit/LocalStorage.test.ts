@@ -3,26 +3,12 @@ import { directoryCapability, downloadOriginal, selectDirectory } from "../../sr
 import { filesFromSelection, LocalAccessError } from "../../src/services/storage/local";
 import type { LocalDirectory, LocalEntry } from "../../src/services/storage/local";
 import { memoryDirectory, memoryFile } from "./helpers/memoryStorage";
+import { readBlobBytes as bytes } from "./helpers/blob";
 
 async function entries(directory: LocalDirectory) {
     const result: LocalEntry[] = [];
     for await (const entry of directory.entries()) result.push(entry);
     return result;
-}
-
-function bytes(blob: Blob): Promise<ArrayBuffer> {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onerror = () => reject(reader.error);
-        reader.onload = () => {
-            if (reader.result instanceof ArrayBuffer) {
-                resolve(reader.result);
-            } else {
-                reject(new Error("Expected binary file data"));
-            }
-        };
-        reader.readAsArrayBuffer(blob);
-    });
 }
 
 afterEach(() => {
@@ -67,7 +53,7 @@ describe("read-only storage adapters", () => {
             kind: "directory" as const,
             name: "RADIO",
             async *values() {
-                yield { kind: "file" as const, getFile };
+                yield { kind: "file" as const, name: "radio.yml", getFile };
                 yield {
                     kind: "directory" as const,
                     name: "EMPTY",
@@ -82,6 +68,38 @@ describe("read-only storage adapters", () => {
         const result = await entries(directory);
         expect(result.map((entry) => entry.kind)).toEqual(["file", "directory"]);
         expect(getFile).toHaveBeenCalledOnce();
+    });
+
+    it("retains a known unreadable file and continues enumerating its siblings", async () => {
+        const directory = await selectDirectory({
+            isSecureContext: true,
+            async showDirectoryPicker() {
+                return {
+                    kind: "directory",
+                    name: "SD",
+                    async *values() {
+                        yield {
+                            kind: "file" as const,
+                            name: "denied.bin",
+                            async getFile(): Promise<File> {
+                                throw new DOMException("Read denied", "NotAllowedError");
+                            },
+                        };
+                        yield {
+                            kind: "file" as const,
+                            name: "available.bin",
+                            async getFile() {
+                                return new File(["ok"], "available.bin");
+                            },
+                        };
+                    },
+                };
+            },
+        });
+
+        const result = await entries(directory);
+        expect(result.map((entry) => entry.kind)).toEqual(["unreadable-file", "file"]);
+        expect(result[0]).toMatchObject({ name: "denied.bin", error: { kind: "denied" } });
     });
 
     it.each([

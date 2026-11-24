@@ -17,7 +17,7 @@ test("imports and downloads an opaque archive through the cross-browser file fal
     await expect(page.getByRole("button", { name: "Select directory (read-only)" })).toBeDisabled();
     await expect(page.getByText("This browser does not support directory access.")).toBeVisible();
     await page.getByLabel("Select files or archives").setInputFiles(upload);
-    await expect(page.getByRole("list", { name: "Selected files" })).toContainText("pocket.etx");
+    await expect(page.getByRole("table", { name: "Workspace inventory" })).toContainText("pocket.etx");
     const requested = page.waitForEvent("download");
     await page.getByRole("button", { name: "Download pocket.etx" }).click();
     const download = await requested;
@@ -28,8 +28,8 @@ test("imports and downloads an opaque archive through the cross-browser file fal
     await expect(page.getByRole("status")).toContainText("Download requested");
     await expect(page.getByRole("status")).toContainText("cannot be confirmed");
 
-    await page.getByRole("button", { name: "Clear selection" }).click();
-    await expect(page.getByRole("list", { name: "Selected files" })).toHaveCount(0);
+    await page.getByRole("button", { name: "Close workspace" }).click();
+    await expect(page.getByRole("table", { name: "Workspace inventory" })).toHaveCount(0);
 });
 
 for (const [name, message, role] of [
@@ -47,10 +47,11 @@ for (const [name, message, role] of [
         }, name);
         await page.goto("/");
         await page.getByLabel("Select files or archives").setInputFiles(upload);
+        await expect(page.getByRole("table", { name: "Workspace inventory" })).toBeVisible();
         await page.getByRole("button", { name: "Select directory (read-only)" }).click();
 
         await expect(page.getByRole(role)).toContainText(message);
-        await expect(page.getByRole("list", { name: "Selected files" })).toContainText("pocket.etx");
+        await expect(page.getByRole("table", { name: "Workspace inventory" })).toContainText("pocket.etx");
         await expect(page.getByRole("button", { name: "Select directory (read-only)" })).toBeEnabled();
         await expect(page.getByText("Selected directory:", { exact: false })).toHaveCount(0);
     });
@@ -72,6 +73,6 @@ test("adapts a real Chromium filesystem directory with read-only picker options"
     await page.getByRole("button", { name: "Select directory (read-only)" }).click();
 
     await expect(page.getByText("Selected directory: SD-COPY")).toBeVisible();
-    await expect(page.getByRole("status")).toContainText("read-only");
+    await expect(page.getByRole("status")).toContainText(/read-only/i);
     await expect(page.getByRole("button", { name: "Select directory (read-only)" })).toBeEnabled();
 });

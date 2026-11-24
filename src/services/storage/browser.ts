@@ -3,6 +3,7 @@ import type { LocalDirectory, LocalEntry, LocalFile } from "./local";
 
 export interface ReadOnlyFileHandle {
     readonly kind: "file";
+    readonly name: string;
     getFile(): Promise<File>;
 }
 
@@ -45,7 +46,15 @@ function directoryFromHandle(handle: ReadOnlyDirectoryHandle): LocalDirectory {
                     if (entry.kind === "directory") {
                         yield { kind: "directory", directory: directoryFromHandle(entry) };
                     } else {
-                        yield { kind: "file", file: fileSource(await entry.getFile()) };
+                        try {
+                            yield { kind: "file", file: fileSource(await entry.getFile()) };
+                        } catch (error) {
+                            yield {
+                                kind: "unreadable-file",
+                                name: entry.name,
+                                error: accessError(error, `read file "${entry.name}"`),
+                            };
+                        }
                     }
                 }
             } catch (error) {
