@@ -1,0 +1,33 @@
+{
+  "id": "pocket-elrs-2.12.4",
+  "manufacturer": "RadioMaster",
+  "radio": "Pocket",
+  "firmwareTarget": "pocket",
+  "rfVariant": "ELRS",
+  "internalModule": "TYPE_CROSSFIRE",
+  "firmwareVersion": "2.12.4",
+  "companionVersion": "2.12.4",
+  "sourceCommit": "def35ad324896b45d6607d4778536b1bc5360d20",
+  "display": {
+    "width": 128,
+    "height": 64,
+    "color": false
+  },
+  "storage": {
+    "format": "EdgeTX YAML",
+    "versionField": "semver",
+    "observedVersion": "2.12.4",
+    "independentSchemaVersion": null,
+    "radioSettings": "RADIO/radio.yml",
+    "models": "MODELS/model*.yml",
+    "activeModelField": "currModel",
+    "modelOrganization": "numbered-slots"
+  },
+  "evidence": {
+    "radioCaptureProvided": true,
+    "companionExportProvided": true,
+    "sanitized": true,
+    "postSanitizationCompanionVerified": false,
+    "radioWritesQualified": false
+  }
+}

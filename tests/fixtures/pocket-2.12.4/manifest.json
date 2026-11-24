@@ -1,0 +1,89 @@
+{
+  "manifestVersion": 1,
+  "profile": "pocket-elrs-2.12.4",
+  "license": "GPL-2.0",
+  "sources": [
+    {
+      "path": "pocket-companion.etx",
+      "size": 13241,
+      "sha256": "60a4258eaba8af686c4d6d51373f010dea037dba5841545b15dd4f38d040d469"
+    },
+    {
+      "path": "provenance.txt",
+      "size": 95,
+      "sha256": "c20ec72afe7e18f7f103aa5760bf41f44ed06df73454bf85956fe37c1ba50e64"
+    },
+    {
+      "path": "radio-original/MODELS/model07.yml",
+      "size": 3242,
+      "sha256": "c1530e4fa312fc552605819d778fd4fe2e0907cd960a7d6e24e9d8232609523d"
+    },
+    {
+      "path": "radio-original/RADIO/radio.yml",
+      "size": 2726,
+      "sha256": "e0c662c2e2a25de7aad2d4efd4646687602f4d3553cc492ad2cc520efee290c8"
+    }
+  ],
+  "files": [
+    {
+      "path": "cases/checksum-mismatch.yml",
+      "size": 2725,
+      "sha256": "195229aba0428a8683043c5e8baf1baec211008a047c5021e3dc715a0d0811fa",
+      "expected": "checksum-mismatch"
+    },
+    {
+      "path": "cases/empty.yml",
+      "size": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "empty-document"
+    },
+    {
+      "path": "cases/invalid.yml",
+      "size": 25,
+      "sha256": "689b6736b624b16f3fa632a8410eeb7be1f82813ba12a1cd6f19d4b5ff1ac123",
+      "expected": "invalid-yaml"
+    },
+    {
+      "path": "cases/unknown-field.yml",
+      "size": 3303,
+      "sha256": "7a7d1cdf4f32d67e41348fd19a238666f38c9a2a7b37f26b0fc7cbe53dae226d",
+      "expected": "preserve-unknown-field"
+    },
+    {
+      "path": "cases/unsupported-version.yml",
+      "size": 43,
+      "sha256": "6f85fe1bc25ac7ecd96890f24daefbfb13793f87d5ac32f25719f5d712a6b4e4",
+      "expected": "unsupported-version"
+    },
+    {
+      "path": "companion/MODELS/model07.yml",
+      "size": 3491,
+      "sha256": "957707a99c5156ab210cd0ee7ea9fa3b1105301481fef39ee20eb89f74da9899",
+      "expected": "sanitized-positive"
+    },
+    {
+      "path": "companion/RADIO/radio.yml",
+      "size": 2737,
+      "sha256": "bbe29306e0ad3bc0e8385de208afe6881ee1a23ccbc3fbeff1b045c27c2c6ec7",
+      "expected": "sanitized-positive"
+    },
+    {
+      "path": "companion/pocket.etx",
+      "size": 6468,
+      "sha256": "dee3adf9039f17327f41f5c6a344c3c8f82c1c2f45a191077fe4def3e407f4f5",
+      "expected": "sanitized-positive"
+    },
+    {
+      "path": "native/MODELS/model07.yml",
+      "size": 3234,
+      "sha256": "41bb7010602d9331a15f348ac4cdb2f8ecb449d73777448c154e54ca3f813ae4",
+      "expected": "sanitized-positive"
+    },
+    {
+      "path": "native/RADIO/radio.yml",
+      "size": 2725,
+      "sha256": "87b7193f2520e181244a317187c063f7510f7c53f71470c877adfdeb20691355",
+      "expected": "sanitized-positive"
+    }
+  ]
+}

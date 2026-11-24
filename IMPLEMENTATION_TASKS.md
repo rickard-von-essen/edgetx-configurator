@@ -10,11 +10,12 @@ Deliver **lossless backup and verified offline restore first**, then browse
 models and make small offline edits. Only enable direct radio writes after
 compatibility tests, recovery behavior and real-hardware validation pass.
 
-Initial supported editing/validation profile: **RadioMaster Zorro with EdgeTX
-v2.12.5**, using stable source commit
-`0ebe2e98b2085e2251ad6773b26c8a7ab8dd3e99`. This is a pinned first target, not a
-claim that other radios or future releases are compatible. Obtain a matching
-radio and record its hardware/RF variant before enabling writes.
+Initial fixture/compatibility baseline: **RadioMaster Pocket ELRS with EdgeTX
+v2.12.4**, using stable source commit
+`def35ad324896b45d6607d4778536b1bc5360d20`. This matches the supplied firmware and
+Companion captures. It is not a claim that other radios or releases are
+compatible. A physical-radio capture is available; matching hardware bench
+verification is still required before enabling writes.
 
 The wider roadmap includes monochrome and color radios, Companion model/radio
 editing and simulation, and Buddy firmware/SD-content workflows.
@@ -38,7 +39,7 @@ UI stack. EdgeTX storage workflows and firmware flashing are separate concerns.
 
 ## Facts that shape the implementation
 
-- The monochrome manual supports Zorro and describes model slots, backup/copy/
+- The monochrome manual supports Pocket and describes model slots, backup/copy/
   move/delete, setup, inputs, mixes, outputs and radio settings. [S1-S4]
 - Native configuration uses `RADIO/radio.yml` and `MODELS/model*.yml`, with
   capability-dependent label/list metadata and associated model notes. Model
@@ -49,7 +50,7 @@ UI stack. EdgeTX storage workflows and firmware flashing are separate concerns.
   the documented `manuallyEdited` flag is not a general-purpose safe writer. [S2, S7]
 - Companion preserves radio-specific calibration on settings writes. Same radio
   type does not mean the same physical calibration. [S6]
-- The inspected development Companion uses `tree.cpp`, while stable v2.12.5 uses
+- The inspected development Companion uses `tree.cpp`, while stable v2.12.4 uses
   `labeled.cpp`. Pin codecs/fixtures to the supported release; do not import
   development assumptions blindly. [S6, S8]
 - Companion's model editor is capability-driven. Its round-trip tests also
@@ -130,7 +131,7 @@ Raw backup/offline restore does not depend on a fully implemented model codec.
 
 **Priority:** P0. **Depends on:** none.
 
-**Work:** Record Zorro/v2.12.5 board, display, storage schema and RF variants.
+**Work:** Record Pocket ELRS/v2.12.4 board, display, storage schema and RF variants.
 Collect clean radio-generated configuration, Companion-generated `.etx`/model
 files, representative notes and metadata. Record provenance, source commit,
 expected behavior and permission/license to include fixtures; do not commit
@@ -139,6 +140,13 @@ personal logs, binding identifiers or private configurations.
 **Acceptance/tests:** Normal, empty, invalid, unsupported-version and unknown-field
 fixtures are reproducible. Schema version is distinguished from firmware release.
 Hardware acquisition is tracked explicitly rather than assumed. [S1, S6-S10]
+
+**Progress:** A [curated corpus](tests/fixtures/pocket-2.12.4/README.md) records the
+profile, provenance, source fingerprints, sanitization and positive/negative
+cases. Native checksums and immutable-file digests are automatically checked.
+Post-sanitization Companion interoperability remains a manual F04/E05 validation
+gate; these test-only settings have synthetic calibration and are not for radio
+deployment.
 
 ### F02. Add local file/directory adapters and capability UX
 
@@ -359,7 +367,7 @@ is a separate X02 policy, not an implicit override. [S6-S8]
 
 **Priority:** P1. **Depends on:** R02, R03.
 
-**Work:** Record real Zorro/v2.12.5 bench tests for supported OS/browser combinations,
+**Work:** Record real Pocket ELRS/v2.12.4 bench tests for supported OS/browser combinations,
 model reload, settings integrity, interrupted operations and documented recovery.
 Require explicit operator review with RF/model operation safely inactive.
 
@@ -581,7 +589,7 @@ their own fixtures and hardware qualification.
 
 **Acceptance/tests:** Capabilities and writer support are explicit per profile.
 Raw backup remains available independently of editor support; unsupported radios
-never inherit Zorro's limits or settings mappings. [S1, S9]
+never inherit Pocket's limits or settings mappings. [S1, S9]
 
 ### X02. Add explicit migration, legacy import and disaster recovery
 
@@ -633,9 +641,9 @@ The development checkout was examined at
 - **S2:** [Model Select](https://manual.edgetx.org/bw-radios/model-select) and [SD-card layout](https://manual.edgetx.org/bw-radios/radio-settings/sd-card).
 - **S3:** [Update/backup procedure and SD preservation](https://manual.edgetx.org/installing-and-updating-edgetx/update-from-opentx-to-edgetx-1).
 - **S4:** [Model Setup](https://manual.edgetx.org/bw-radios/model-select/setup), [control flow](https://manual.edgetx.org/bw-radios/model-select/inputs-mixes-and-outputs), [Inputs](https://manual.edgetx.org/bw-radios/model-select/inputs-mixes-and-outputs/inputs), [Mixes](https://manual.edgetx.org/bw-radios/model-select/inputs-mixes-and-outputs/mixes), [Outputs](https://manual.edgetx.org/bw-radios/model-select/inputs-mixes-and-outputs/outputs).
-- **S5:** [Stable `.etx` ZIP reader/writer](https://github.com/EdgeTX/edgetx/blob/0ebe2e98b2085e2251ad6773b26c8a7ab8dd3e99/companion/src/storage/etx.cpp).
-- **S6:** [Stable models/settings tree and calibration preservation](https://github.com/EdgeTX/edgetx/blob/0ebe2e98b2085e2251ad6773b26c8a7ab8dd3e99/companion/src/storage/labeled.cpp) and [SD storage adapter](https://github.com/EdgeTX/edgetx/blob/0ebe2e98b2085e2251ad6773b26c8a7ab8dd3e99/companion/src/storage/sdcard.cpp).
-- **S7:** [Stable firmware YAML/checksum recovery](https://github.com/EdgeTX/edgetx/blob/0ebe2e98b2085e2251ad6773b26c8a7ab8dd3e99/radio/src/storage/sdcard_yaml.cpp) and [hardware settings](https://manual.edgetx.org/bw-radios/radio-settings/hardware).
+- **S5:** [Stable `.etx` ZIP reader/writer](https://github.com/EdgeTX/edgetx/blob/def35ad324896b45d6607d4778536b1bc5360d20/companion/src/storage/etx.cpp).
+- **S6:** [Stable models/settings tree and calibration preservation](https://github.com/EdgeTX/edgetx/blob/def35ad324896b45d6607d4778536b1bc5360d20/companion/src/storage/labeled.cpp) and [SD storage adapter](https://github.com/EdgeTX/edgetx/blob/def35ad324896b45d6607d4778536b1bc5360d20/companion/src/storage/sdcard.cpp).
+- **S7:** [Stable firmware YAML/checksum recovery](https://github.com/EdgeTX/edgetx/blob/def35ad324896b45d6607d4778536b1bc5360d20/radio/src/storage/sdcard_yaml.cpp) and [hardware settings](https://manual.edgetx.org/bw-radios/radio-settings/hardware).
 - **S8:** [Development storage dispatch](https://github.com/EdgeTX/edgetx/blob/54df93de52a87f18bd77273ac0f31438a03d82d4/companion/src/storage/storage.cpp), [tree writes](https://github.com/EdgeTX/edgetx/blob/54df93de52a87f18bd77273ac0f31438a03d82d4/companion/src/storage/tree.cpp), [single-YAML import](https://github.com/EdgeTX/edgetx/blob/54df93de52a87f18bd77273ac0f31438a03d82d4/companion/src/storage/yaml.cpp).
 - **S9:** [Companion editor panels/capability gates](https://github.com/EdgeTX/edgetx/blob/54df93de52a87f18bd77273ac0f31438a03d82d4/companion/src/modeledit/modeledit.cpp), [setup](https://github.com/EdgeTX/edgetx/blob/54df93de52a87f18bd77273ac0f31438a03d82d4/companion/src/modeledit/setup.cpp), [model/tool actions](https://github.com/EdgeTX/edgetx/blob/54df93de52a87f18bd77273ac0f31438a03d82d4/companion/src/mainwindow.cpp).
 - **S10:** [Companion model round-trip tests and caveats](https://github.com/EdgeTX/edgetx/blob/54df93de52a87f18bd77273ac0f31438a03d82d4/companion/src/tests/model_yaml_roundtrip_test.cpp).
@@ -644,4 +652,4 @@ The development checkout was examined at
 - **S13:** [Buddy flashing/build job stages](https://github.com/EdgeTX/buddy/blob/66401b2fcec2c31976930c982c220820b1cee7f8/src/shared/backend/services/flashJobs.ts).
 - **S14:** [Buddy firmware catalog/downloads](https://github.com/EdgeTX/buddy/blob/66401b2fcec2c31976930c982c220820b1cee7f8/src/shared/backend/services/firmwareStore.ts) and [browser capability checks](https://github.com/EdgeTX/buddy/blob/66401b2fcec2c31976930c982c220820b1cee7f8/src/renderer/compatibility/checks.ts).
 - **S15:** [Directory API permissions, support and secure-context requirements](https://developer.mozilla.org/en-US/docs/Web/API/Window/showDirectoryPicker).
-- **Release baseline:** [EdgeTX v2.12.5](https://github.com/EdgeTX/edgetx/releases/tag/v2.12.5), verified as the stable release during this investigation; do not auto-retarget implementation to a later release.
+- **Release baseline:** [EdgeTX v2.12.4](https://github.com/EdgeTX/edgetx/releases/tag/v2.12.4), pinned to the supplied Pocket ELRS firmware and Companion captures; add release support through explicit fixture and compatibility work.

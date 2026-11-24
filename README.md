@@ -12,7 +12,15 @@ examples, browser smoke tests, code-style checks, and CI. The
 
 The [implementation backlog](IMPLEMENTATION_TASKS.md) covers planned backup/restore,
 model editing, and broader Companion/Buddy replacement work, starting with
-RadioMaster Zorro / EdgeTX v2.12.5.
+RadioMaster Pocket ELRS / EdgeTX v2.12.4.
+
+The [curated compatibility fixtures](tests/fixtures/pocket-2.12.4/README.md)
+contain minimized, de-identified radio and Companion captures. Verify their
+digests and settings checksums with `npm test -- tests/unit/PocketFixtures.test.ts`.
+The original `tests/data/pocket-fixtures/` input is private, ignored by Git and
+Prettier, and can be moved outside the repository or removed after retaining a
+private backup. Curated settings contain synthetic calibration and must never
+be restored onto a radio.
 
 ## Development
 

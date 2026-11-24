@@ -1,2 +1,4 @@
 package-lock.json
 LICENSE
+tests/data/pocket-fixtures/
+tests/fixtures/**/*.yml

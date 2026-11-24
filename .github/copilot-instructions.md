@@ -5,7 +5,7 @@
 - `README.md` is the source of truth for the project's current scope: a new web-based configurator for [EdgeTX](https://github.com/EdgeTX/edgetx).
 - The goal is to replace both [EdgeTX Companion](https://github.com/EdgeTX/edgetx/tree/main/companion) and [EdgeTX Buddy](https://github.com/EdgeTX/buddy). Consider both projects when clarifying migration requirements.
 - Use the new [Betaflight Configurator](https://github.com/betaflight/betaflight-configurator) as the UI/tooling design reference and this repository's landed implementation for architecture and conventions.
-- `SETUP_TASKS.md` records the application foundation. `IMPLEMENTATION_TASKS.md` describes planned features, starting with Zorro / EdgeTX v2.12.5, lossless backup and offline restore.
+- `SETUP_TASKS.md` records the application foundation. `IMPLEMENTATION_TASKS.md` describes planned features, starting with Pocket ELRS / EdgeTX v2.12.4, lossless backup and offline restore.
 
 ## Commands
 
@@ -44,6 +44,7 @@ browser installation and smoke tests on pull requests and pushes to `main`.
 - Prettier owns formatting: four-space indentation, two spaces for JSON/YAML/Markdown, 120 columns, double quotes, semicolons, LF. ESLint owns correctness rules; do not duplicate formatter rules.
 - ESLint's flat config assigns browser globals to source/unit tests and Node globals to tooling/smoke tests. Keep `eslint-config-prettier` last; TypeScript owns undefined-name checking in `.ts`/`.vue` files.
 - Follow the backlog's data-preservation contract when implementing EdgeTX features: retain original/unknown data, distinguish `.etx` interchange from full SD backups, preserve target calibration, and qualify radio writes with pinned-format fixtures and matching hardware.
+- `tests/fixtures/pocket-2.12.4/` contains reviewed, sanitized snapshots and profile/provenance metadata. YAML snapshots are excluded from Prettier to preserve checksums, line endings and intentionally invalid cases; verify with `npm test -- tests/unit/PocketFixtures.test.ts`. Raw `tests/data/pocket-fixtures/` inputs are private and ignored; never force-add them. Fixture preparation optionally uses Python 3's standard library as documented in the corpus README.
 - `README.md` documents commands and dependency-audit limitations; follow its compatibility guidance when changing pinned tools. Keep it and these instructions synchronized with configuration changes.
 
 ## Browser tooling

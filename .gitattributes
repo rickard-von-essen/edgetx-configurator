@@ -1,0 +1,2 @@
+tests/fixtures/**/*.yml -text whitespace=-trailing-space,cr-at-eol
+tests/fixtures/**/*.etx binary
