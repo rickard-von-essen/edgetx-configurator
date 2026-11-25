@@ -78,6 +78,8 @@ include required system libraries. Chromium-only checks remain available with
 | Build and run Chromium/Firefox/WebKit smoke tests | `npm run test:smoke`                                               |
 | Run one smoke-test file                           | `npm run test:smoke -- tests/smoke/app.spec.ts`                    |
 | Run one browser project                           | `npm run test:smoke -- --project chromium`                         |
+| Generate test-only codec verification artifacts   | `npm run codec:fixtures`                                           |
+| Compare matching-Companion model exports          | `npm run codec:compare -- "/path/to/private-exports"`              |
 
 Development serves `http://127.0.0.1:5173`; preview serves
 `http://127.0.0.1:4173`. Ports are strict: stop the process occupying the port
@@ -146,6 +148,69 @@ Chromium coverage also reads nested origin-private filesystem handles and verifi
 that a later source edit does not alter captured downloads; it does not automate
 the OS picker itself. Firefox and WebKit cover file/download, workspace,
 navigation, cancellation and diagnostic workflows.
+
+### Native YAML scalar codec (F04)
+
+`src/domain/edgetx/` contains a **verification-only** codec, not an editing UI
+or radio-write feature. The raw workspace still reports content validation as
+not run. The codec requires an explicitly selected Pocket ELRS/v2.12.4 target;
+it never infers a model's board from the filename or current project target.
+
+- YAML `2.9.1` uses a failsafe, string-preserving AST to locate existing scalar
+  ranges. The codec never converts the document to a JS object or serializes the
+  whole document. Targeted edits preserve other bytes, comments, unknown fields,
+  leading-zero masks and original line endings.
+- Inspection is capped at **1 MiB, 50,000 AST nodes including mapping keys, and
+  64 container levels including the root mapping**. Invalid UTF-8, duplicate
+  keys, tags, anchors, aliases, merges, unsupported structures/targets and failed
+  integrity checks stay read-only with original bytes available.
+- The initial owned subset covers model/timer names, timer mode/start/switch,
+  selected input/mix fields, and radio speaker volume. Everything else is opaque.
+  Input percentages use +/-100; mixes use +/-500. Timer starts use seconds.
+  Flight-mode bit strings retain their order/leading zeroes; set bits disable
+  modes. Radio volume uses signed native steps (-12 through 11), with a +12
+  Companion slider offset. References expose their native index bases and
+  unsupported tokens are never silently changed to `NONE`.
+- Radio candidates recompute CRC-16/CCITT over exact emitted body bytes.
+  Calibration, registration fields and `manuallyEdited` are not editable by this
+  codec; a missing marker in normal Companion output is retained as absent.
+  No checksum mismatch is accepted through a zero value or override flag.
+
+Focused checks:
+
+```sh
+npm test -- tests/unit/NativeYaml.test.ts tests/unit/NativeReferences.test.ts
+```
+
+The sanitized baseline and both edited candidate archives have been opened in
+Companion 2.12.4. Reexported model fields passed `codec:compare`. The displayed
+`I2:Ele` and `SB-` correspond to native `I1` and `SB1`; an unchecked weight
+"Use source" checkbox is correct for the literal value 75%.
+This is qualification of the tested scalar subset, not an enabled editing UI,
+whole-model equivalence or radio-write qualification.
+
+To reproduce the verification when changing the codec:
+
+1. Run `npm run codec:fixtures` **after** browser tests. It creates
+   `test-results/f04-companion/native-candidate.etx` and
+   `test-results/f04-companion/companion-candidate.etx`, plus edited YAML files
+   and `expected.json`. Playwright clears `test-results/` on its next run.
+2. Open both archives using a Pocket profile in **Companion 2.12.4**. They must
+   open without parse/version/checksum warnings. Check model **CodecTest**, timer
+   **Tst** set to **ON / 00:01:00**, and the first mix's **75%** weight, second
+   virtual input (native **I1**) and SB middle-position condition (native **SB1**).
+   The radio's native volume is **4** (Companion slider position **16**).
+3. Export each CodecTest model to a private directory outside the repository as
+   **`native-companion-export.yml`** and **`companion-companion-export.yml`**.
+   Run `npm run codec:compare -- "/path/to/private-exports"` to compare qualified
+   fields. This is not a whole-model equivalence or hardware qualification claim.
+
+The timer is an explicitly synthetic seed added for this check: its existing
+start scalar changes from 30 to 60 seconds. It is not a radio-generated timer
+fixture. The helper uses Vite's TS loader and dev-only `fflate` ZIP tooling,
+closes its loader, and writes only generated artifacts under the ignored
+`test-results/` directory. **Never write these synthetic-calibration artifacts
+to a radio or replace the reviewed corpus with them.**
 
 ### Code conventions and CI
 

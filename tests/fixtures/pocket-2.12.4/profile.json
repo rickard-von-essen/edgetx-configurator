@@ -27,7 +27,9 @@
     "radioCaptureProvided": true,
     "companionExportProvided": true,
     "sanitized": true,
-    "postSanitizationCompanionVerified": false,
+    "postSanitizationCompanionVerified": true,
+    "codecCandidatesCompanionVerified": true,
+    "codecModelExportFieldsCompared": true,
     "radioWritesQualified": false
   }
 }

@@ -12,8 +12,12 @@ The fixture manifest's version is our corpus format, not an EdgeTX schema number
 
 The Pocket has a 128x64 monochrome display and the captured ELRS radio uses
 `TYPE_CROSSFIRE`. Other Pocket RF variants are not covered. The maintainer
-provided a physical-radio capture and matching Companion export; post-curation
-Companion/radio verification and radio-write qualification remain pending.
+provided a physical-radio capture and matching Companion export. The sanitized
+`companion/pocket.etx` baseline was manually loaded in Companion 2.12.4 without
+issues. Both edited-codec candidates were opened in the same Companion version,
+and their reexported model fields passed `codec:compare`. This qualifies the
+tested scalar-codec subset, not whole-model equivalence or radio writes. These
+synthetic settings must never be restored onto a radio.
 
 Source references:
 
@@ -62,7 +66,8 @@ and is deliberately excluded from this minimal corpus.
 | `cases/unknown-field.yml`       | Retain an added, unowned field without data loss                        |
 | `cases/checksum-mismatch.yml`   | Nonzero incorrect checksum; never bypass as legacy zero-checksum data   |
 
-These expected outcomes guide F04; they do not imply a YAML codec already exists.
+These expected outcomes are checked by the F04 verification-only codec spike;
+they do not imply an enabled editor or qualified radio writer.
 No-op round-trip tests must compare bytes. Do not format these YAML snapshots.
 `.gitattributes` disables newline conversion for the snapshots and archive, so
 their checksums and manifest digests remain stable on Windows as well.

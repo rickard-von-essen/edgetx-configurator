@@ -1,7 +1,7 @@
 # EdgeTX Configurator implementation backlog
 
-Status: F01 compatibility fixtures, F02 local access and F03 raw workspaces are
-implemented; remaining items are planned work. The application foundation is
+Status: F01 compatibility fixtures, F02 local access, F03 raw workspaces and the
+F04 qualified scalar-codec spike are implemented; remaining items are planned work. The application foundation is
 covered by [SETUP_TASKS.md](SETUP_TASKS.md). This backlog turns the Companion/Buddy
 replacement goal into incremental feature milestones.
 
@@ -145,9 +145,10 @@ Hardware acquisition is tracked explicitly rather than assumed. [S1, S6-S10]
 **Progress:** A [curated corpus](tests/fixtures/pocket-2.12.4/README.md) records the
 profile, provenance, source fingerprints, sanitization and positive/negative
 cases. Native checksums and immutable-file digests are automatically checked.
-Post-sanitization Companion interoperability remains a manual F04/E05 validation
-gate; these test-only settings have synthetic calibration and are not for radio
-deployment.
+The sanitized Companion baseline and F04 edited candidates were manually loaded
+in Companion 2.12.4; their model exports matched the qualified field expectations.
+Further field coverage/interchange still requires its own validation.
+These test-only settings have synthetic calibration and are not for radio deployment.
 
 ### F02. Add local file/directory adapters and capability UX
 
@@ -206,6 +207,18 @@ reload with only intended semantic changes, including edge-case strings and
 line endings. Unsupported tags/aliases/schema variants remain read-only. Verify
 against radio-generated fixtures and matching Companion; if parity cannot be
 proven, assess codec reuse/WASM before allowing writes. [S6-S10]
+
+**Progress:** A verification-only TypeScript scalar-range codec and pinned
+field/reference rules are implemented with byte-preserving no-op export and
+strict CRC handling. User-approved inspection limits are 1 MiB, 50,000 AST
+nodes and 64 container levels. Automated fixture/negative/reference checks pass.
+The baseline archive opens in Companion 2.12.4; edited candidate archives and
+model-field comparisons are available through `npm run codec:fixtures` and
+`npm run codec:compare`. Both edited candidate archives were checked in
+Companion 2.12.4, and both exported models passed comparison. The displayed
+`I2:Ele`/`SB-` and literal-weight checkbox state match native `I1`/`SB1` and
+numeric weight 75. F04 is complete for this tested scalar subset.
+No editing UI, whole-model conversion or source/radio writes are enabled.
 
 ## M1: first useful backup and offline restore
 
